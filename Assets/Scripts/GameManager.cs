@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 
 
 namespace Com.Assassins
@@ -14,6 +15,23 @@ namespace Com.Assassins
     
     public class GameManager : MonoBehaviourPunCallbacks
     {
+
+        private System.Random random = new System.Random();
+        public GameObject playerPrefab;
+
+        private void Start()
+        {
+
+            int startX = random.Next(-4, 4);
+            int startY = random.Next(-4, 4);
+            if (playerPrefab == null)
+            {
+                Debug.LogError("No prefab found");
+            } else
+            {
+                PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(startX, startY, 0), Quaternion.identity, 0);
+            }
+        }
         void LoadArena()
         {
             if (!PhotonNetwork.IsMasterClient)

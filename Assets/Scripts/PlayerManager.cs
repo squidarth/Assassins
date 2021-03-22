@@ -13,6 +13,16 @@ namespace Com.Assassins
         private Vector2 moveVec;
         public float speed = 10;
         private Rigidbody2D controller;
+        public static GameObject LocalPlayerInstance;
+
+        private void Awake()
+        {
+            if (photonView.IsMine)
+            {
+                PlayerManager.LocalPlayerInstance = this.gameObject;
+            }
+            DontDestroyOnLoad(this.gameObject);
+        }
 
         public void OnMove(InputValue input)
         {
@@ -39,7 +49,7 @@ namespace Com.Assassins
 
         void FixedUpdate()
         {
-            if (moveVec != Vector2.zero)
+            if (moveVec != Vector2.zero && (this.gameObject == PlayerManager.LocalPlayerInstance || !PhotonNetwork.IsConnected))
             {
                 Vector2 oldPosition = new Vector2(transform.position.x, transform.position.y);
                 controller.MovePosition(oldPosition + (moveVec * speed * Time.deltaTime));

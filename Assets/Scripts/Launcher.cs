@@ -3,21 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Linq;
+using System;
 
 namespace Com.Assassins
 {
     public class Launcher : MonoBehaviourPunCallbacks
     {
+        private string validRoomNameChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         string gameVersion = "1";
+        private static System.Random random = new System.Random();
 
         [Tooltip("Max Players Per Room")]
         [SerializeField]
         private byte maxPlayersPerRoom = 4;
 
+        string roomToJoin;
+
 
         bool isConnecting;
 
+        private string generateRoomName()
+        {
+            int length = 6;
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+
+        }
 
         void Awake()
         {
@@ -25,17 +39,32 @@ namespace Com.Assassins
             
         }
 
-        public void Connect()
+        public void SetRoomToJoin(string roomCode)
+        {
+            roomToJoin = roomCode;
+        }
+
+        public void JoinRoom()
         {
             if (PhotonNetwork.IsConnected)
             {
-                PhotonNetwork.JoinRandomRoom();
-            } else
-            {
-                isConnecting = PhotonNetwork.ConnectUsingSettings();
-                PhotonNetwork.GameVersion = gameVersion;
+                PhotonNetwork.JoinRoom(roomToJoin);
             }
-            
+
+        }
+
+        public void CreateRoom()
+        {
+            if (PhotonNetwork.IsConnected)
+            {
+                PhotonNetwork.CreateRoom(generateRoomName());
+            }
+        }
+
+        public void Start()
+        {
+            isConnecting = PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.GameVersion = gameVersion;
         }
 
         public override void OnConnectedToMaster()
@@ -43,7 +72,6 @@ namespace Com.Assassins
             if (isConnecting)
             {
                 Debug.Log("OnConnectedToMaster called");
-                PhotonNetwork.JoinRandomRoom();
              }
         }
 
