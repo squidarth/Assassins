@@ -19,7 +19,7 @@ namespace Com.Assassins
         private System.Random random = new System.Random();
         public GameObject playerPrefab;
 
-        private void Start()
+        void Start()
         {
 
             int startX = random.Next(-4, 4);
@@ -29,7 +29,14 @@ namespace Com.Assassins
                 Debug.LogError("No prefab found");
             } else
             {
-                PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(startX, startY, 0), Quaternion.identity, 0);
+                Debug.Log("Instantiating the player");
+                if (PlayerManager.LocalPlayerInstance == null)
+                {
+                    PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(startX, startY, 0), Quaternion.identity, 0);
+                } else
+                {
+
+                }
             }
         }
         void LoadArena()
@@ -39,7 +46,10 @@ namespace Com.Assassins
                 Debug.LogError("Not the master client");
             }
             Debug.LogFormat("PhotonNetwork, loading level with {0}", PhotonNetwork.CurrentRoom.PlayerCount);
-            PhotonNetwork.LoadLevel("MainScene");
+            if (SceneManager.GetActiveScene().name != "MainScene")
+            {
+                PhotonNetwork.LoadLevel("MainScene");
+            }
         }
 
         public override void OnLeftRoom()

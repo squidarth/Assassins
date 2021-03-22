@@ -35,7 +35,7 @@ namespace Com.Assassins
         // Update is called once per frame
         void LateUpdate()
         {
-            if (transform.position != target.position && isFollowing) {
+            if (target != null && transform.position != target.position && isFollowing) {
                 Debug.Log("Attempting to do a camera update");
                 Debug.Log(target);
                 Vector3 transformPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
