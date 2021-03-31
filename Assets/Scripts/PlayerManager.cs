@@ -15,14 +15,21 @@ namespace Com.Assassins
         private Rigidbody2D controller;
         public static GameObject LocalPlayerInstance;
 
+        /* Loot box in proximity of this player */
+        private LootBox lootBoxInRange;
+
         private void Awake()
         {
             if (photonView.IsMine)
             {
                 PlayerManager.LocalPlayerInstance = this.gameObject;
+                var inventoryUI = GameObject.Find("Inventory Panel").GetComponent<InventoryUI>();
+                var inventory = GetComponent<PlayerInventory>();
+                inventoryUI.SetInventory(inventory);
             }
             DontDestroyOnLoad(this.gameObject);
         }
+
 
         public void OnMove(InputValue input)
         {
@@ -53,6 +60,37 @@ namespace Com.Assassins
             {
                 Vector2 oldPosition = new Vector2(transform.position.x, transform.position.y);
                 controller.MovePosition(oldPosition + (moveVec * speed * Time.deltaTime));
+            }
+        }
+
+
+        void OnOpenLootBox()
+        {
+            if (lootBoxInRange)
+            {
+                lootBoxInRange.Open();
+                Debug.Log("Found loot box in range.");
+            }
+
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            Debug.Log("Entered a trigger range");
+            if (collision.gameObject.tag == "LootBox" && (this.gameObject == PlayerManager.LocalPlayerInstance || !PhotonNetwork.IsConnected ))
+            {
+                lootBoxInRange = collision.gameObject.GetComponent<LootBox>();
+                Debug.LogFormat("setting lootBoxInragne to {0}", lootBoxInRange);
+            }
+        }
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (collision.gameObject.tag == "LootBox")
+            {
+                Debug.Log("Leaving range of loot box");
+                lootBoxInRange.CloseBox();
+                lootBoxInRange = null;
+                
             }
         }
     }

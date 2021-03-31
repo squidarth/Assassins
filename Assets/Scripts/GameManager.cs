@@ -18,6 +18,10 @@ namespace Com.Assassins
 
         private System.Random random = new System.Random();
         public GameObject playerPrefab;
+        public List<Player> currentPlayers;
+
+        public delegate void GamePlayersChanged(List<Player> players);
+        public static event GamePlayersChanged OnGamePlayersChanged;
 
         void Start()
         {
@@ -38,7 +42,11 @@ namespace Com.Assassins
 
                 }
             }
+
+            this.currentPlayers = new List<Player>(PhotonNetwork.PlayerList);
+            OnGamePlayersChanged(currentPlayers);
         }
+
         void LoadArena()
         {
             if (!PhotonNetwork.IsMasterClient)
@@ -74,6 +82,9 @@ namespace Com.Assassins
                 LoadArena();
             }
 
+            currentPlayers.Add(other);
+
+            OnGamePlayersChanged(currentPlayers);
         }
 
         public override void OnPlayerLeftRoom(Player other)
@@ -88,6 +99,9 @@ namespace Com.Assassins
 
                 LoadArena();
             }
+
+            currentPlayers.Remove(other);
+            OnGamePlayersChanged(currentPlayers);
         }
     }
 }

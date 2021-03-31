@@ -10,8 +10,6 @@ namespace Com.Assassins
 {
     public class Launcher : MonoBehaviourPunCallbacks
     {
-        private string validRoomNameChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
         string gameVersion = "1";
         private static System.Random random = new System.Random();
 
