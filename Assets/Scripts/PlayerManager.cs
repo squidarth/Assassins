@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine.InputSystem;
 
 namespace Com.Assassins
@@ -14,6 +15,7 @@ namespace Com.Assassins
         public float speed = 10;
         private Rigidbody2D controller;
         public static GameObject LocalPlayerInstance;
+        public Player owner;
 
         /* Loot box in proximity of this player */
         private LootBox lootBoxInRange;
@@ -23,6 +25,7 @@ namespace Com.Assassins
             if (photonView.IsMine)
             {
                 PlayerManager.LocalPlayerInstance = this.gameObject;
+                this.owner = this.gameObject.GetPhotonView().Owner;
                 var inventoryUI = GameObject.Find("Inventory Panel").GetComponent<InventoryUI>();
                 var inventory = GetComponent<PlayerInventory>();
                 inventoryUI.SetInventory(inventory);
@@ -62,8 +65,7 @@ namespace Com.Assassins
                 controller.MovePosition(oldPosition + (moveVec * speed * Time.deltaTime));
             }
         }
-
-
+            
         void OnOpenLootBox()
         {
             if (lootBoxInRange)

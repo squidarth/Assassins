@@ -37,9 +37,6 @@ namespace Com.Assassins
                 if (PlayerManager.LocalPlayerInstance == null)
                 {
                     PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(startX, startY, 0), Quaternion.identity, 0);
-                } else
-                {
-
                 }
             }
 
