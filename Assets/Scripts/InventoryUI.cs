@@ -7,24 +7,24 @@ namespace Com.Assassins
 {
     public class InventoryUI : MonoBehaviour
     {
-        private PlayerInventory inventory;
-        public GameObject itemDisplayPrefab;
+        public PlayerInventory inventory;
+
         private bool isOpen = false;
         public void SetInventory(PlayerInventory inventory)
         {
             this.inventory = inventory;
+            inventory.OnItemsUpdated += Render;
         }
 
         public void OnToggleInventory()
         {
             if (isOpen)
             {
-                this.gameObject.GetComponentInParent<Canvas>().enabled = false;
+                GetComponent<Canvas>().enabled = false;
                 isOpen = false;
             } else
             {
-                Render();
-                this.gameObject.GetComponentInParent<Canvas>().enabled = true;
+                GetComponent<Canvas>().enabled = true;
                 isOpen = true;
             }
         }
@@ -32,24 +32,50 @@ namespace Com.Assassins
         private void Start()
         {
             
-            this.gameObject.GetComponentInParent<Canvas>().enabled = false;
+            GetComponent<Canvas>().enabled = false;
+        }
+
+        void RenderInventory()
+        {
+            var inventoryTransform = transform.Find("Inventory Panel");
+            int children = inventoryTransform.childCount;
+            for (int i = children -1;i>=0;i--)
+            {
+                GameObject.Destroy(inventoryTransform.GetChild(i).gameObject);
+            }
+            foreach (var item in inventory.items)
+            {
+                GameObject availableItem = (GameObject)Instantiate(item.inventoryDisplayPrefab);
+                availableItem.transform.SetParent(inventoryTransform, false);
+                Button tmpButton = availableItem.GetComponent<Button>();
+                if (item.type == ItemCategory.Weapon)
+                {
+                    tmpButton.onClick.AddListener(() => inventory.LocalEquipWeapon(item));
+                }
+
+            }
+        }
+
+        void RenderEquipmentSection()
+        {
+            var equipped = transform.Find("Equipped Panel");
+            int children = equipped.childCount;
+            for (int i = children -1;i>=0;i--)
+            {
+                GameObject.Destroy(equipped.GetChild(i).gameObject);
+            }
+
+            if (inventory.primaryWeapon != null) {
+                GameObject availableItem = (GameObject)Instantiate(inventory.primaryWeapon.inventoryDisplayPrefab);
+                availableItem.transform.SetParent(equipped, false);
+                Button tmpButton = availableItem.GetComponent<Button>();
+            }
         }
 
         void Render()
         {
-            int children = transform.childCount;
-            for (int i = children -1;i>=0;i--)
-            {
-                GameObject.Destroy(transform.GetChild(i).gameObject);
-            }
-            foreach (var item in inventory.items)
-            {
-                Debug.LogFormat("Processing item {0}", item);
-                GameObject availableItem = (GameObject)Instantiate(itemDisplayPrefab);
-                availableItem.transform.SetParent(transform, false);
-                Button tmpButton = availableItem.GetComponent<Button>();
-            }
-
+            RenderInventory();
+            RenderEquipmentSection();
         }
     }
 }

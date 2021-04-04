@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2e8d8fd5f33553429ce26133a3e998a, type: 3}
+  m_Name: Axe
+  m_EditorClassIdentifier: 
+  inventoryDisplayPrefab: {fileID: 3115605766923522017, guid: e9b7010e61e9c49409dd4663a980267f, type: 3}
+  type: 1
+  description: 
+  hitChance: 0.8
+  displayPrefab: {fileID: 1171185991332112808, guid: 8560e06cb81bde2478255a5beed92610, type: 3}

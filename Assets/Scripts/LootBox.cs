@@ -7,13 +7,13 @@ namespace Com.Assassins
 {
     public class LootBox : MonoBehaviourPunCallbacks
     {
-        public List<ItemType> items;
+        public List<ItemObject> items;
         public LootBoxUI lootBoxUI;
 
         [PunRPC]
-        public void RemoveItem(ItemType item)
+        public void RemoveItem(int itemIndex)
         {
-            items.Remove(item);
+            items.Remove(StaticItemManager.FromIndex(itemIndex));
         }
 
         private void Start()
@@ -21,11 +21,11 @@ namespace Com.Assassins
             lootBoxUI = GameObject.Find("Lootbox Panel").GetComponent<LootBoxUI>();
         }
 
-        public void transferItemToPlayer(ItemType item)
+        public void transferItemToPlayer(ItemObject item)
         {
-            photonView.RPC("RemoveItem", RpcTarget.All, item);
+            photonView.RPC("RemoveItem", RpcTarget.All, StaticItemManager.ToIndex(item));
             var playerPhotonView = PlayerManager.LocalPlayerInstance.GetPhotonView();
-            playerPhotonView.RPC("AcquireItem", RpcTarget.All, item);
+            playerPhotonView.RPC("AcquireItem", RpcTarget.All, StaticItemManager.ToIndex(item));
             lootBoxUI.Render();
         }
 

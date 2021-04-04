@@ -26,7 +26,7 @@ namespace Com.Assassins
             {
                 PlayerManager.LocalPlayerInstance = this.gameObject;
                 this.owner = this.gameObject.GetPhotonView().Owner;
-                var inventoryUI = GameObject.Find("Inventory Panel").GetComponent<InventoryUI>();
+                var inventoryUI = GameObject.Find("Inventory Canvas").GetComponent<InventoryUI>();
                 var inventory = GetComponent<PlayerInventory>();
                 inventoryUI.SetInventory(inventory);
             }
