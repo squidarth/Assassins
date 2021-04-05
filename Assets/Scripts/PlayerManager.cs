@@ -22,10 +22,11 @@ namespace Com.Assassins
 
         private void Awake()
         {
+
+            this.owner = this.gameObject.GetPhotonView().Owner;
             if (photonView.IsMine)
             {
                 PlayerManager.LocalPlayerInstance = this.gameObject;
-                this.owner = this.gameObject.GetPhotonView().Owner;
                 var inventoryUI = GameObject.Find("Inventory Canvas").GetComponent<InventoryUI>();
                 var inventory = GetComponent<PlayerInventory>();
                 inventoryUI.SetInventory(inventory);
@@ -87,7 +88,7 @@ namespace Com.Assassins
         }
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (collision.gameObject.tag == "LootBox")
+            if (collision.gameObject.tag == "LootBox" && lootBoxInRange != null)
             {
                 Debug.Log("Leaving range of loot box");
                 lootBoxInRange.CloseBox();

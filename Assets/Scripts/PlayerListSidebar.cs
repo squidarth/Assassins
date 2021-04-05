@@ -12,7 +12,9 @@ namespace Com.Assassins
     {
         // Start is called before the first frame update
 
-        private TextMeshProUGUI textField;
+        public TextMeshProUGUI playerListingTextField;
+        public TextMeshProUGUI gameInProgressTextField;
+        public GameManager gameManager;
 
         private string renderPlayerName(Player player)
         {
@@ -31,9 +33,11 @@ namespace Com.Assassins
 
         }
 
-        public void Render(List<Player> players)
+        public void Render()
         {
+            var players = gameManager.currentPlayers;
             string stringToRender;
+
             if (players == null)
             {
                 stringToRender = "";
@@ -45,21 +49,33 @@ namespace Com.Assassins
                 stringToRender = string.Join("\n", playerNames);
             }
 
-            textField.SetText(stringToRender);
+            playerListingTextField.SetText(stringToRender);
+
+            if (gameManager.roundSystem.gameInProgress)
+            {
+                gameInProgressTextField.SetText("Game In Progress");
+            } else
+            {
+                gameInProgressTextField.SetText("No Game In Progress");
+            }
+        }
+
+        public void OnGamePlayersChanged(List<Player> players)
+        {
+            Render();
+        }
+
+        public void OnGameStateEnded(string winnerId)
+        {
+
+            Render();
         }
 
         private void OnEnable()
         {
-            GameManager.OnGamePlayersChanged += Render;
-        }
-
-        private void OnDisable()
-        {
-            GameManager.OnGamePlayersChanged -= Render;
-        }
-        void Start()
-        {
-            textField = GetComponentInChildren<TextMeshProUGUI>();
+            GameManager.OnGamePlayersChanged += OnGamePlayersChanged;
+            GameManager.OnGameStateStarted += Render;
+            GameManager.OnGameStateEnded += OnGameStateEnded;
         }
     }
 }

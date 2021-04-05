@@ -21,11 +21,6 @@ public class StaticItemManager : MonoBehaviour
     void Start()
     {
         StaticItemManager.AllGameItems = Resources.LoadAll("", typeof(ItemObject)).Cast<ItemObject>().ToList();
-        foreach (var item in StaticItemManager.AllGameItems)
-        {
-            Debug.Log(item.type);
-
-        }
     }
 
     // Update is called once per frame

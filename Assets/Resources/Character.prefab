@@ -342,7 +342,7 @@ GameObject:
   - component: {fileID: 5612902345912879735}
   m_Layer: 6
   m_Name: CharacterCollision
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -811,6 +811,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17e6c8c0b1887ab4ea11a4af39d826af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDead: 0
+  attackRange: 3
+  gameManager: {fileID: 0}
 --- !u!1 &8157951930406634681
 GameObject:
   m_ObjectHideFlags: 0

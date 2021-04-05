@@ -35,7 +35,6 @@ namespace Com.Assassins
                 items.Remove(item);
                 primaryWeapon = (WeaponObject) item;
                 var newWeapon = Instantiate(primaryWeapon.displayPrefab, weaponContainer.transform);
-                //newWeapon.transform.SetParent(weaponContainer);
                 if (photonView.IsMine)
                 {
                     OnItemsUpdated();
