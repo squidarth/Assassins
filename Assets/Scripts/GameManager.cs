@@ -32,11 +32,19 @@ namespace Com.Assassins
         public delegate void GameStateStarted();
         public static event GameStateStarted OnGameStateStarted;
 
+        public delegate void LivePlayersUpdated();
+        public static event LivePlayersUpdated OnLivePlayersUpdated;
+
 
         public void handleDeath(string attackerId, string attackedId)
         {
             roundSystem.photonView.RPC("Death", RpcTarget.All, attackerId, attackedId);
 
+        }
+
+        public void UpdateLivePlayers()
+        {
+            OnLivePlayersUpdated();
         }
 
         void Start()

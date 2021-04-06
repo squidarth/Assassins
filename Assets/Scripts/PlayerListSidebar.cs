@@ -43,26 +43,39 @@ namespace Com.Assassins
             var localActorNumber = PlayerManager.LocalPlayerInstance.GetPhotonView().Owner.ActorNumber;
 
 
-                for (int i = 0;i < playerListPanel.childCount;i++) {
-                    GameObject.Destroy(playerListPanel.GetChild(i).gameObject);
-                }
+            for (int i = 0;i < playerListPanel.childCount;i++) {
+                GameObject.Destroy(playerListPanel.GetChild(i).gameObject);
+            }
 
-                foreach (var player in players)
+            foreach (var player in players)
+            {
+                var playerNameObject = Instantiate(playerNamePrefab, playerListPanel);
+                var textMesh = playerNameObject.GetComponent<TextMeshProUGUI>();
+
+                if (gameManager.roundSystem && gameManager.roundSystem.gameInProgress)
                 {
-                    var playerNameObject = Instantiate(playerNamePrefab, playerListPanel);
-                    var textMesh = playerNameObject.GetComponent<TextMeshProUGUI>();
 
-                    if (gameManager.roundSystem && gameManager.roundSystem.gameInProgress && gameManager.roundSystem.targets[localActorNumber.ToString()] == player.ActorNumber.ToString())
+                    var textToRender = renderPlayerName(player);
+                    if (gameManager.roundSystem.targets[localActorNumber.ToString()] == player.ActorNumber.ToString())
                     {
-
-                        textMesh.SetText("💀" + renderPlayerName(player));
+                        textToRender = "💀" + textToRender;
                         textMesh.color = new Color32(214, 34, 0, 255);
-                    } else
-                    {
-                        textMesh.SetText(renderPlayerName(player));
                     }
-                            
+
+                    if (!gameManager.roundSystem.targets.ContainsKey(player.ActorNumber.ToString()))
+                    {
+                        textToRender += "(Dead)";
+                    }
+
+                    textMesh.SetText(textToRender);
+
                 }
+                else
+                {
+                    textMesh.SetText(renderPlayerName(player));
+                }
+                        
+            }
 
             if (gameManager.roundSystem.gameInProgress)
             {
@@ -89,6 +102,7 @@ namespace Com.Assassins
             GameManager.OnGamePlayersChanged += OnGamePlayersChanged;
             GameManager.OnGameStateStarted += Render;
             GameManager.OnGameStateEnded += OnGameStateEnded;
+            GameManager.OnLivePlayersUpdated += Render;
         }
     }
 }

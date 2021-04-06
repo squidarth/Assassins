@@ -30,6 +30,14 @@ namespace Com.Assassins
                     playerCombat.IsDead = true;
                     playerCombat.OnDie();
                     gameManager.handleDeath(attackerId, attackedId);
+                } else if (player.GetPhotonView().Owner.ActorNumber.ToString() == attackerId)
+                {
+                    var animation = player.transform.Find("Weapon").GetComponentInChildren<Animation>();
+                    if (animation != null)
+                    {
+                        animation.Play();
+                    }
+
                 }
             }
         }

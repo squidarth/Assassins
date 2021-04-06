@@ -30,8 +30,8 @@ public class RoundSystem : MonoBehaviourPunCallbacks
             var newTarget = targets[attackedId];
             targets.Remove(attackedId);
             reverseTargets.Remove(attackedId);
-            targets[attackerId] = targets[attackedId];
-            reverseTargets[targets[attackedId]] = attackerId;
+            targets[attackerId] = newTarget;
+            reverseTargets[newTarget] = attackerId;
         }
 
     }
