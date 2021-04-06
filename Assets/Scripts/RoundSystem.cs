@@ -32,6 +32,8 @@ public class RoundSystem : MonoBehaviourPunCallbacks
             reverseTargets.Remove(attackedId);
             targets[attackerId] = newTarget;
             reverseTargets[newTarget] = attackerId;
+            gameManager.UpdateLivePlayers();
+
         }
 
     }
