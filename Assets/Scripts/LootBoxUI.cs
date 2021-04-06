@@ -54,7 +54,7 @@ namespace Com.Assassins
             foreach (var item in lootBox.items)
             {
                 Debug.LogFormat("Processing item {0}", item);
-                GameObject availableItem = (GameObject)Instantiate(itemDisplayPrefab);
+                GameObject availableItem = (GameObject)Instantiate(item.inventoryDisplayPrefab);
                 availableItem.transform.SetParent(transform, false);
                 Button tmpButton = availableItem.GetComponent<Button>();
 

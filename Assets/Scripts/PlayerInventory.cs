@@ -30,6 +30,10 @@ namespace Com.Assassins
         {
             var item = StaticItemManager.FromIndex(itemIndex);
             var weaponContainer = transform.Find("Weapon");
+            for (int i = 0; i< weaponContainer.childCount;i++)
+            {
+                GameObject.Destroy(weaponContainer.GetChild(i).gameObject);
+            }
             if ((item.type) == ItemCategory.Weapon)
             {
                 items.Remove(item);

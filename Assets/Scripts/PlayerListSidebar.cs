@@ -1,6 +1,7 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using System.Linq;
 using TMPro;
@@ -14,6 +15,9 @@ namespace Com.Assassins
 
         public TextMeshProUGUI playerListingTextField;
         public TextMeshProUGUI gameInProgressTextField;
+        public Transform playerListPanel;
+        public GameObject playerNamePrefab;
+
         public GameManager gameManager;
 
         private string renderPlayerName(Player player)
@@ -36,20 +40,29 @@ namespace Com.Assassins
         public void Render()
         {
             var players = gameManager.currentPlayers;
-            string stringToRender;
+            var localActorNumber = PlayerManager.LocalPlayerInstance.GetPhotonView().Owner.ActorNumber;
 
-            if (players == null)
-            {
-                stringToRender = "";
-            } else
-            {
-                List<string> playerNames = (
-                  from player in players select renderPlayerName(player)
-                ).ToList();
-                stringToRender = string.Join("\n", playerNames);
-            }
 
-            playerListingTextField.SetText(stringToRender);
+                for (int i = 0;i < playerListPanel.childCount;i++) {
+                    GameObject.Destroy(playerListPanel.GetChild(i).gameObject);
+                }
+
+                foreach (var player in players)
+                {
+                    var playerNameObject = Instantiate(playerNamePrefab, playerListPanel);
+                    var textMesh = playerNameObject.GetComponent<TextMeshProUGUI>();
+
+                    if (gameManager.roundSystem && gameManager.roundSystem.gameInProgress && gameManager.roundSystem.targets[localActorNumber.ToString()] == player.ActorNumber.ToString())
+                    {
+
+                        textMesh.SetText("💀" + renderPlayerName(player));
+                        textMesh.color = new Color32(214, 34, 0, 255);
+                    } else
+                    {
+                        textMesh.SetText(renderPlayerName(player));
+                    }
+                            
+                }
 
             if (gameManager.roundSystem.gameInProgress)
             {
