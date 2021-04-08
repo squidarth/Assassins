@@ -34,6 +34,18 @@ namespace Com.Assassins
             DontDestroyOnLoad(this.gameObject);
         }
 
+        public void TurnToGhost()
+        {
+            controller.isKinematic = true;
+            transform.Find("CharacterCollision").gameObject.SetActive(false);
+
+        }
+
+        public void ComeBackToLife()
+        {
+            controller.isKinematic = false;
+            transform.Find("CharacterCollision").gameObject.SetActive(true);
+        }
 
         public void OnMove(InputValue input)
         {
@@ -46,6 +58,10 @@ namespace Com.Assassins
         {
             controller = this.gameObject.GetComponent<Rigidbody2D>();
             CameraWork _cameraWork = this.gameObject.GetComponent<CameraWork>();
+
+            PlayerCombat combat = this.gameObject.GetComponent<PlayerCombat>();
+            combat.OnDie += TurnToGhost;
+            GameManager.OnGameStateEnded += (string winnerId) => ComeBackToLife();
 
             if (_cameraWork != null)
             {
