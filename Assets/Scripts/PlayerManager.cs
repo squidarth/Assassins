@@ -79,7 +79,19 @@ namespace Com.Assassins
             if (moveVec != Vector2.zero && (this.gameObject == PlayerManager.LocalPlayerInstance || !PhotonNetwork.IsConnected))
             {
                 Vector2 oldPosition = new Vector2(transform.position.x, transform.position.y);
-                controller.MovePosition(oldPosition + (moveVec * speed * Time.deltaTime));
+                RaycastHit2D[] hits = new RaycastHit2D[10];
+                ContactFilter2D filter = new ContactFilter2D()
+                {
+                    layerMask = 1 << LayerMask.NameToLayer("Player"),
+                    useLayerMask = true
+                };
+                var numCollisions = controller.Cast(moveVec, filter, hits, 0.6f);
+
+                Debug.LogFormat("Printing numCollisions: {0}", numCollisions);
+                if (numCollisions == 0)
+                {
+                    controller.MovePosition(oldPosition + (moveVec * speed * Time.deltaTime));
+                }
             }
         }
             
