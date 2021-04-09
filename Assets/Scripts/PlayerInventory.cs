@@ -29,7 +29,7 @@ namespace Com.Assassins
         public void EquipWeapon(int itemIndex)
         {
             var item = StaticItemManager.FromIndex(itemIndex);
-            var weaponContainer = transform.Find("Weapon");
+            var weaponContainer = transform.Find("Visual").Find("Weapon");
             for (int i = 0; i< weaponContainer.childCount;i++)
             {
                 GameObject.Destroy(weaponContainer.GetChild(i).gameObject);

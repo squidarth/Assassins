@@ -16,6 +16,8 @@ namespace Com.Assassins
         private Rigidbody2D controller;
         public static GameObject LocalPlayerInstance;
         public Player owner;
+        private bool facingRight = true;
+        private bool isGhost = false;
 
         /* Loot box in proximity of this player */
         private LootBox lootBoxInRange;
@@ -36,15 +38,17 @@ namespace Com.Assassins
 
         public void TurnToGhost()
         {
-            controller.isKinematic = true;
-            transform.Find("CharacterCollision").gameObject.SetActive(false);
-
+            isGhost = true;
+            GetComponent<Rigidbody2D>().isKinematic = true;
+            GetComponent<CapsuleCollider2D>().isTrigger = true;
         }
 
         public void ComeBackToLife()
         {
-            controller.isKinematic = false;
-            transform.Find("CharacterCollision").gameObject.SetActive(true);
+
+            isGhost = false;
+            GetComponent<Rigidbody2D>().isKinematic = false;
+            GetComponent<CapsuleCollider2D>().isTrigger = false;
         }
 
         public void OnMove(InputValue input)
@@ -87,10 +91,21 @@ namespace Com.Assassins
                 };
                 var numCollisions = controller.Cast(moveVec, filter, hits, 0.6f);
 
-                Debug.LogFormat("Printing numCollisions: {0}", numCollisions);
-                if (numCollisions == 0)
+                if (numCollisions == 0 || isGhost || hits[0].rigidbody.isKinematic)
                 {
                     controller.MovePosition(oldPosition + (moveVec * speed * Time.deltaTime));
+                }
+
+                if (moveVec.x > 0 && !facingRight || moveVec.x < 0 && facingRight)
+                {
+                    transform.Find("Visual").transform.Rotate(new Vector3(0, 180, 0));
+                    if (moveVec.x > 0)
+                    {
+                        facingRight = true;
+                    } else if (moveVec.x < 0)
+                    {
+                        facingRight = false;
+                    }
                 }
             }
         }
