@@ -61,7 +61,6 @@ namespace Com.Assassins
                 if (PlayerManager.LocalPlayerInstance == null)
                 {
                     var playerObject = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(startX, startY, 0), Quaternion.identity, 0);
-                    playerObject.GetComponent<PlayerCombat>().gameManager = this;
                 }
             }
 

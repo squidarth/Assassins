@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using System.Linq;
+
 
 namespace Com.Assassins
 {
@@ -32,7 +34,7 @@ namespace Com.Assassins
                     gameManager.handleDeath(attackerId, attackedId);
                 } else if (player.GetPhotonView().Owner.ActorNumber.ToString() == attackerId)
                 {
-                    var animation = player.transform.Find("Weapon").GetComponentInChildren<Animation>();
+                    var animation = player.transform.Find("Visual").Find("Weapon").GetComponentInChildren<Animation>();
                     if (animation != null)
                     {
                         animation.Play();
@@ -56,7 +58,18 @@ namespace Com.Assassins
                 Debug.Log(LayerMask.NameToLayer("Player"));
                 Debug.Log("Performing attack with weapon");
                 Debug.Log(new Vector2(transform.position.x, transform.position.y));
-                Collider2D[] colliders = Physics2D.OverlapCircleAll(new Vector2(transform.position.x, transform.position.y), attackRange, 1 << LayerMask.NameToLayer("Player"));
+
+                RaycastHit2D[] hits = new RaycastHit2D[10];
+                ContactFilter2D filter = new ContactFilter2D()
+                {
+                    layerMask = 1 << LayerMask.NameToLayer("Player"),
+                    useLayerMask = true
+                };
+
+                Vector2 direction = GetComponent<PlayerManager>().facingRight ? new Vector2(1, 0) : new Vector2(-1, 0);
+                var numCollisions = GetComponent<Rigidbody2D>().Cast(direction, filter, hits, 1);
+
+                var colliders = from hit in hits select hit.collider;
                 
                 foreach(var collider in colliders)
                 {
@@ -75,6 +88,7 @@ namespace Com.Assassins
         void Start()
         {
             IsDead = false;
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
             
         }
 

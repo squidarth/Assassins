@@ -56,7 +56,7 @@ namespace Com.Assassins
                 {
 
                     var textToRender = renderPlayerName(player);
-                    if (gameManager.roundSystem.targets[localActorNumber.ToString()] == player.ActorNumber.ToString())
+                    if (gameManager.roundSystem.targets.ContainsKey(localActorNumber.ToString()) &&  gameManager.roundSystem.targets[localActorNumber.ToString()] == player.ActorNumber.ToString())
                     {
                         textToRender = "💀" + textToRender;
                         textMesh.color = new Color32(214, 34, 0, 255);

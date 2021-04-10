@@ -16,8 +16,8 @@ namespace Com.Assassins
         private Rigidbody2D controller;
         public static GameObject LocalPlayerInstance;
         public Player owner;
-        private bool facingRight = true;
-        private bool isGhost = false;
+        public bool facingRight = true;
+        public bool isGhost = false;
 
         /* Loot box in proximity of this player */
         private LootBox lootBoxInRange;
