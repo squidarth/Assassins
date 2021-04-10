@@ -9,6 +9,7 @@ namespace Com.Assassins
     {
 
         public LootBox lootBox;
+        public GameManager gameManager;
 
         public GameObject itemDisplayPrefab = null;
         private bool IsOpen = false;
@@ -59,7 +60,12 @@ namespace Com.Assassins
                 Button tmpButton = availableItem.GetComponent<Button>();
 
                 // TODO: Set the icon on these buttons
-                tmpButton.onClick.AddListener(() => lootBox.transferItemToPlayer(item));
+                tmpButton.onClick.AddListener(() => { 
+                    if (gameManager.roundSystem && gameManager.roundSystem.gameInProgress)
+                    {
+                        lootBox.transferItemToPlayer(item); 
+                    }
+                });
             }
             
         }

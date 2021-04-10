@@ -15,6 +15,21 @@ namespace Com.Assassins
         public delegate void ItemsUpdated();
         public event ItemsUpdated OnItemsUpdated;
 
+        private void Start()
+        {
+            GameManager.OnGameStateEnded += (string _) =>
+            {
+                items = new List<ItemObject>();
+                primaryWeapon = null;
+                if (photonView.IsMine)
+                {
+                    OnItemsUpdated();
+                }
+
+                RemoveWeaponDisplay(FindWeaponVisual());
+            };
+        }
+
         [PunRPC]
         public void AcquireItem(int itemIndex)
         {
@@ -25,15 +40,25 @@ namespace Com.Assassins
             }
         }
 
-        [PunRPC]
-        public void EquipWeapon(int itemIndex)
+        public void RemoveWeaponDisplay(Transform weaponContainer)
         {
-            var item = StaticItemManager.FromIndex(itemIndex);
-            var weaponContainer = transform.Find("Visual").Find("Weapon");
             for (int i = 0; i< weaponContainer.childCount;i++)
             {
                 GameObject.Destroy(weaponContainer.GetChild(i).gameObject);
             }
+        }
+
+        private Transform FindWeaponVisual()
+        {
+            return transform.Find("Visual").Find("Weapon");
+        }
+
+        [PunRPC]
+        public void EquipWeapon(int itemIndex)
+        {
+            var item = StaticItemManager.FromIndex(itemIndex);
+            var weaponContainer = FindWeaponVisual();
+            RemoveWeaponDisplay(weaponContainer);
             if ((item.type) == ItemCategory.Weapon)
             {
                 items.Remove(item);

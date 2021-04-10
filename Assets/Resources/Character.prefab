@@ -638,6 +638,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  facingRight: 1
+  isGhost: 0
 --- !u!114 &1918482801446338539
 MonoBehaviour:
   m_ObjectHideFlags: 0

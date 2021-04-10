@@ -1035,6 +1035,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lootBox: {fileID: 0}
+  gameManager: {fileID: 1852158560}
   itemDisplayPrefab: {fileID: 3115605766923522017, guid: e9b7010e61e9c49409dd4663a980267f, type: 3}
 --- !u!1 &582120143
 GameObject:

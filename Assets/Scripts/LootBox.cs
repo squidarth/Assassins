@@ -7,6 +7,7 @@ namespace Com.Assassins
 {
     public class LootBox : MonoBehaviourPunCallbacks
     {
+        public List<ItemObject> originalItems;
         public List<ItemObject> items;
         public LootBoxUI lootBoxUI;
 
@@ -19,6 +20,11 @@ namespace Com.Assassins
         private void Start()
         {
             lootBoxUI = GameObject.Find("Lootbox Panel").GetComponent<LootBoxUI>();
+            originalItems = new List<ItemObject>(items);
+            GameManager.OnGameStateEnded += (string winnerId) =>
+            {
+                items = new List<ItemObject>(originalItems);
+            };
         }
 
         public void transferItemToPlayer(ItemObject item)

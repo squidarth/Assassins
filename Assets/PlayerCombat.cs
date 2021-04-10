@@ -31,7 +31,7 @@ namespace Com.Assassins
                     var playerCombat = player.GetComponent<PlayerCombat>();
                     playerCombat.IsDead = true;
                     playerCombat.OnDie();
-                    gameManager.handleDeath(attackerId, attackedId);
+                    gameManager.roundSystem.Death(attackerId, attackedId);
                 } else if (player.GetPhotonView().Owner.ActorNumber.ToString() == attackerId)
                 {
                     var animation = player.transform.Find("Visual").Find("Weapon").GetComponentInChildren<Animation>();
@@ -69,12 +69,13 @@ namespace Com.Assassins
                 Vector2 direction = GetComponent<PlayerManager>().facingRight ? new Vector2(1, 0) : new Vector2(-1, 0);
                 var numCollisions = GetComponent<Rigidbody2D>().Cast(direction, filter, hits, 1);
 
-                var colliders = from hit in hits select hit.collider;
-                
-                foreach(var collider in colliders)
+                var colliders = from hit in hits select hit.collider ;
+                var collider = colliders.First();
+
+                if (collider != null)
                 {
                     var otherUserId = collider.gameObject.GetPhotonView().Owner.ActorNumber;
-                    if (otherUserId != myUserId)
+                    if (AllowedToAttackTarget(myUserId, otherUserId))
                     {
                         Debug.LogFormat("Attacking {0}", otherUserId);
                         photonView.RPC("PerformAttack", RpcTarget.All, myUserId.ToString(), otherUserId.ToString());
@@ -84,12 +85,21 @@ namespace Com.Assassins
             }
         }
 
+        bool AllowedToAttackTarget(int myUserId, int targetUserId)
+        {
+            return gameManager.roundSystem.targets[myUserId.ToString()] == targetUserId.ToString();
+        }
+
         // Start is called before the first frame update
         void Start()
         {
             IsDead = false;
             gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-            
+            GameManager.OnGameStateEnded += (string winnerId) =>
+            {
+                IsDead = false;
+                gameManager.UpdateLivePlayers();
+            };
         }
 
         // Update is called once per frame

@@ -15,27 +15,28 @@ public class RoundSystem : MonoBehaviourPunCallbacks
     public Dictionary<string, string> targets;
     public Dictionary<string, string> reverseTargets;
 
-    [PunRPC]
     public void Death(string attackerId, string attackedId)
     {
         Debug.Log("Death RPC hit");
         /* In this case, we've reached the end of the game */
-        if (targets[attackedId] == attackerId)
-        {
-            // end of the game logic
+        var newTarget = targets[attackedId];
+        targets.Remove(attackedId);
+        reverseTargets.Remove(attackedId);
+        targets[attackerId] = newTarget;
+        reverseTargets[newTarget] = attackerId;
+        gameManager.UpdateLivePlayers();
+
+        CheckForGameEnd(attackerId);
+
+    }
+
+    public void CheckForGameEnd(string attackerId)
+    {
+        if (targets.Keys.Count == 1){ 
+            // Game is over
             gameInProgress = false;
             gameManager.GameComplete(attackerId);
-        } else
-        {
-            var newTarget = targets[attackedId];
-            targets.Remove(attackedId);
-            reverseTargets.Remove(attackedId);
-            targets[attackerId] = newTarget;
-            reverseTargets[newTarget] = attackerId;
-            gameManager.UpdateLivePlayers();
-
         }
-
     }
 
     [PunRPC]

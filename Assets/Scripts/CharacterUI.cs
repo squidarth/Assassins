@@ -17,6 +17,7 @@ namespace Com.Assassins
             this.playerCombat = GetComponentInParent<PlayerCombat>();
             this.playerCombat.OnDie += SetText;
             GameManager.OnGameStateEnded += ((string _) => SetText());
+            GameManager.OnLivePlayersUpdated += SetText;
             SetText();
         }
 
