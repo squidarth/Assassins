@@ -20,13 +20,11 @@ namespace Com.Assassins
             GameManager.OnGameStateEnded += (string _) =>
             {
                 items = new List<ItemObject>();
-                primaryWeapon = null;
+                loseWeapon();
                 if (photonView.IsMine)
                 {
                     OnItemsUpdated();
                 }
-
-                RemoveWeaponDisplay(FindWeaponVisual());
             };
         }
 
@@ -37,6 +35,16 @@ namespace Com.Assassins
             if (photonView.IsMine)
             {
                 OnItemsUpdated();
+            }
+        }
+
+        public void loseWeapon()
+        {
+            primaryWeapon = null;
+            var weaponVisual = FindWeaponVisual();
+            if (weaponVisual)
+            {
+                RemoveWeaponDisplay(weaponVisual);
             }
         }
 

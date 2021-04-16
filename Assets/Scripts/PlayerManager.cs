@@ -41,6 +41,8 @@ namespace Com.Assassins
             isGhost = true;
             GetComponent<Rigidbody2D>().isKinematic = true;
             GetComponent<CapsuleCollider2D>().isTrigger = true;
+            transform.Find("Visual").gameObject.SetActive(false);
+            transform.Find("Ghost Visual").gameObject.SetActive(true);
         }
 
         public void ComeBackToLife()
@@ -49,6 +51,8 @@ namespace Com.Assassins
             isGhost = false;
             GetComponent<Rigidbody2D>().isKinematic = false;
             GetComponent<CapsuleCollider2D>().isTrigger = false;
+            transform.Find("Visual").gameObject.SetActive(true);
+            transform.Find("Ghost Visual").gameObject.SetActive(false);
         }
 
         public void OnMove(InputValue input)

@@ -10,6 +10,7 @@ namespace Com.Assassins
         public List<ItemObject> originalItems;
         public List<ItemObject> items;
         public LootBoxUI lootBoxUI;
+        private IEnumerator refreshCountdown;
 
         [PunRPC]
         public void RemoveItem(int itemIndex)
@@ -21,10 +22,36 @@ namespace Com.Assassins
         {
             lootBoxUI = GameObject.Find("Lootbox Panel").GetComponent<LootBoxUI>();
             originalItems = new List<ItemObject>(items);
+            GameManager.OnGameStateStarted += () =>
+            {
+                refreshCountdown = Countdown();
+                StartCoroutine(refreshCountdown);
+            };
             GameManager.OnGameStateEnded += (string winnerId) =>
             {
                 items = new List<ItemObject>(originalItems);
+                StopCoroutine(refreshCountdown);
+                refreshCountdown = null;
             };
+        }
+
+        [PunRPC]
+        public void RefreshItems()
+        {
+            items = new List<ItemObject>(originalItems);
+        }
+
+        private IEnumerator Countdown()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(60);
+
+                if (photonView.IsMine)
+                {
+                    photonView.RPC("RefreshItems", RpcTarget.All);
+                }
+            }
         }
 
         public void transferItemToPlayer(ItemObject item)

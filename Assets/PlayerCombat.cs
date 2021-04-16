@@ -35,6 +35,7 @@ namespace Com.Assassins
                 } else if (player.GetPhotonView().Owner.ActorNumber.ToString() == attackerId)
                 {
                     var animation = player.transform.Find("Visual").Find("Weapon").GetComponentInChildren<Animation>();
+                    player.GetComponent<PlayerInventory>().loseWeapon();
                     if (animation != null)
                     {
                         animation.Play();
