@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.InputSystem;
@@ -8,7 +9,7 @@ using UnityEngine.InputSystem;
 namespace Com.Assassins
 {
 
-    public class PlayerManager : MonoBehaviourPunCallbacks
+    public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
 
         private Vector2 moveVec;
@@ -112,6 +113,23 @@ namespace Com.Assassins
                     }
                 }
             }
+        }
+
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                stream.SendNext(facingRight);
+            } else
+            {
+                var newDirection = (bool)stream.ReceiveNext();
+                if (newDirection != facingRight)
+                {
+                    facingRight = newDirection;
+                    transform.Find("Visual").transform.Rotate(new Vector3(0, 180, 0));
+                }
+            }
+
         }
             
         void OnOpenLootBox()
